@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if product %}Editar{% else %}Cadastrar{% endif %} Produto</title>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-header {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .form-required {
+            color: #dc3545;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 16px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .delete-form {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .topnav {
+            background-color: #2c3e50;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+           display: flex;
+            justify-content: space-between;
+            border-radius: 8px;
+        }
+        
+        .topnav a {
+            float: left;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 16px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .topnav a:hover {
+            background-color: #34495e;
+            color: #3498db;
+        }
+         .auth-links {
+            margin-top: 5px;
+        }
+        
+        .auth-links a {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .auth-links a:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            
+        }
+        
+    </style>
+</head>
+<body>
+     <div class="topnav">
+        <div>
+        <a href="/">Home</a>
+        <a href="/products">Produto</a>
+        
+        </div>
+            <div class="auth-links">
+                <a href="/login">Sair</a>
+            </div>
+    </div>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>{% if product %}✏ Editar{% else %}➕ Cadastrar{% endif %} Produto</h1>
+            <p>{% if product %}Modifique as informações do produto abaixo{% else %}Preencha os dados do novo produto{% endif %}</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="name" class="form-label">
+                    Nome do Produto <span class="form-required">*</span>
+                </label>
+                <input type="text" id="name" name="name" class="form-input" 
+                       value="{{ product.name if product else '' }}" 
+                       required maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="category" class="form-label">
+                    Categoria <span class="form-required">*</span>
+                </label>
+                <select id="category" name="category" class="form-select" required>
+                    <option value="">Selecione uma categoria</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" 
+                                {% if product and product.category == cat %}selected{% endif %}>
+                            {{ cat }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="help-text">Ou digite uma nova categoria</div>
+                <input type="text" id="new_category" name="new_category" class="form-input" 
+                       style="margin-top: 5px;" placeholder="Nova categoria..."
+                       onchange="document.getElementById('category').value = this.value">
+            </div>
+
+            <div class="form-group">
+                <label for="units_per_box" class="form-label">
+                    Unidades por Caixa <span class="form-required">*</span>
+                </label>
+                <input type="number" id="units_per_box" name="units_per_box" class="form-input" 
+                       value="{{ product.units_per_box if product else '' }}" 
+                       required min="1" max="1000">
+                <div class="help-text">Número de unidades em cada caixa</div>
+            </div>
+
+         
+
+            
+
+            <div class="form-group">
+                <label for="image" class="form-label">Imagem (URL)</label>
+                <input type="text" id="image" name="image" class="form-input" 
+                       value="{{ product.image if product else '' }}" 
+                       placeholder="ex: produto.jpg">
+                <div class="help-text">Nome do arquivo de imagem (opcional)</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    {% if product %}💾 Atualizar{% else %}➕ Cadastrar{% endif %} Produto
+                </button>
+                <a href="{% if product %}{{ url_for('product_detail', product_id=product.id) }}{% else %}{{ url_for('products_page') }}{% endif %}" 
+                   class="btn btn-secondary">
+                    ↩ Cancelar
+                </a>
+            </div>
+        </form>
+
+        {% if product %}
+        <div class="delete-form">
+            <h3>Zona de Perigo</h3>
+            <p>Esta ação não pode ser desfeita. O produto será permanentemente excluído.</p>
+            <form action="{{ url_for('delete_product_route', product_id=product.id) }}" method="POST" 
+                  onsubmit="return confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')">
+                <button type="submit" class="btn btn-danger">🗑 Excluir Produto</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Script para sincronizar categoria existente com novo campo
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category');
+            const newCategoryInput = document.getElementById('new_category');
+            
+            categorySelect.addEventListener('change', function() {
+                if (this.value) {
+                    newCategoryInput.value = '';
+                }
+            });
+            
+            newCategoryInput.addEventListener('input', function() {
+                if (this.value) {
+                    categorySelect.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

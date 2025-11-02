@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .topnav {
+            background-color: #2c3e50;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .topnav a {
+            float: left;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 16px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .topnav a:hover {
+            background-color: #34495e;
+            color: #3498db;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            font-size: 2rem;
+        }
+        
+        .welcome-message {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .auth-links {
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .auth-links a:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .auth-links a:last-child {
+            background-color: #2ecc71;
+        }
+        
+        .auth-links a:last-child:hover {
+            background-color: #27ae60;
+        }
+        
+        @media (max-width: 600px) {
+            .topnav a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+            
+            .auth-links a {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+    
+    <div class="container">
+        <h2>Home</h2>
+        <div class="welcome-message">
+            Bem-vindo, visitante!
+            <div class="auth-links">
+                <a href="/login">Login</a>
+                <a href="/register">Registrar</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

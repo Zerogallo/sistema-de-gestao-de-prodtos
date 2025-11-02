@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+    <style>
+        .products-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .filters {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .search-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .search-input, .category-select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 200px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            height: fit-content;
+            
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+        .reset-button {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            height: fit-content;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .reset-button:hover {
+            background-color: #545b62;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .product-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .product-category {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            color: #495057;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .product-units {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .view-details {
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .view-details:hover {
+            background-color: #218838;
+        }
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.1em;
+        }
+        .results-info {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .topnav {
+            background-color: #2c3e50;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+           display: flex;
+            justify-content: space-between;
+            border-radius: 8px;
+        }
+        
+        .topnav a {
+            float: left;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 16px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .topnav a:hover {
+            background-color: #34495e;
+            color: #3498db;
+        }
+         .auth-links {
+            margin-top: 5px;
+        }
+        
+        .auth-links a {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .auth-links a:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            
+        }
+        
+       
+        
+    </style>
+</head>
+<body>
+   <div class="topnav">
+        <div>
+        <a href="/">Home</a>
+        <a href="/products">Produto</a>
+        
+        </div>
+            <div class="auth-links">
+                <a href="/login">Sair</a>
+            </div>
+    </div>
+    <div class="products-container">
+        <h1>📦 Nossos Produtos</h1>
+        
+        <!-- Filtros e Busca -->
+        <div class="filters">
+            <form action="{{ url_for('search_products') }}" method="get" class="search-form">
+                <div class="form-group">
+                    <label for="search">Buscar Produtos:</label>
+                    <input type="text" id="search" name="q" class="search-input" 
+                           placeholder="Digite o nome do produto ou categoria..." 
+                           value="{{ search_term or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Categoria:</label>
+                    <select id="category" name="category" class="category-select">
+                        <option value="all">Todas as categorias</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}" 
+                                    {% if selected_category == category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="search-button">🔍 Buscar</button>
+                <a href="{{ url_for('products_page') }}" class="reset-button">🔄 Limpar</a>
+                 <a href="{{ url_for('new_product') }}" 
+       style="padding: 12px 24px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+        ➕ Novo Produto
+    </a>
+            </form>
+        </div>
+
+        <!-- Informações dos resultados -->
+        {% if search_term or selected_category and selected_category != 'all' %}
+        <div class="results-info">
+            {% if search_term and selected_category and selected_category != 'all' %}
+                Mostrando resultados para "{{ search_term }}" na categoria {{ selected_category }}
+            {% elif search_term %}
+                Mostrando resultados para "{{ search_term }}"
+            {% elif selected_category and selected_category != 'all' %}
+                Mostrando produtos da categoria {{ selected_category }}
+            {% endif %}
+            - {{ products|length }} produto(s) encontrado(s)
+        </div>
+        {% endif %}
+
+        <!-- Grid de produtos -->
+        {% if products %}
+            <div class="products-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        {% if product.image %}
+                            <img src="{{ url_for('static', filename='images/products/' + product.image) }}" 
+                                 alt="{{ product.name }}" 
+                                 class="product-image"
+                                 onerror="this.src='{{ url_for('static', filename='images/placeholder.png') }}'">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" 
+                                 alt="Imagem não disponível" 
+                                 class="product-image">
+                        {% endif %}
+                        
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-category">{{ product.category }}</div>
+                        <div class="product-units">
+                            <strong>Unidades por caixa:</strong> {{ product.units_per_box }}
+                        </div>
+                        
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" 
+                           class="view-details">
+                            Ver Detalhes
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-products">
+                <p>Nenhum produto encontrado.</p>
+                {% if search_term or selected_category %}
+                    <p>Tente ajustar os termos de busca ou <a href="{{ url_for('products_page') }}">ver todos os produtos</a>.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        
+    </div>
+  
+</body>
+</html>
